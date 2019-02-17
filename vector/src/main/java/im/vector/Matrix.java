@@ -659,8 +659,10 @@ public class Matrix {
                 .withFileEncryption(CONFIG_ENABLE_LOCAL_FILE_ENCRYPTION)
                 .build();
 
-        // Turn on the anti-virus server
-        session.getContentManager().configureAntiVirusScanner(true);
+        // Turn on the anti-virus server (except for custom deployments)
+        boolean enableAV = !BuildConfig.FLAVOR_target.equals("custom");
+        Log.d(LOG_TAG, "AV? " + enableAV + " target: " + BuildConfig.FLAVOR_target);
+        session.getContentManager().configureAntiVirusScanner(enableAV);
 
         dataHandler.setMetricsListener(metricsListener);
         dataHandler.setRequestNetworkErrorListener(new MXDataHandler.RequestNetworkErrorListener() {

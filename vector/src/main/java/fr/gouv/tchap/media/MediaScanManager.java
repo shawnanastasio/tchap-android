@@ -30,6 +30,7 @@ import java.util.Date;
 import java.util.List;
 
 import fr.gouv.tchap.model.MediaScan;
+import im.vector.BuildConfig;
 import im.vector.util.SlidableMediaInfo;
 import io.realm.Realm;
 
@@ -249,8 +250,10 @@ public class MediaScanManager {
      * @return true if the event contains at least one unchecked or untrusted url.
      */
     public boolean isUncheckedOrUntrustedMediaEvent(Event event) {
-
-        if (event.isEncrypted()) {
+        if (BuildConfig.FLAVOR_target.equals("custom")) {
+            Log.d(LOG_TAG, "FIXME: Tried to validate media event in a custom build (no media_scanner)!");
+            return false;
+        } else if (event.isEncrypted()) {
             List<EncryptedFileInfo> encryptedFileInfos = event.getEncryptedFileInfos();
             for (EncryptedFileInfo encryptedFileInfo : encryptedFileInfos) {
                 MediaScan mediaScan = scanEncryptedMedia(encryptedFileInfo);
@@ -281,7 +284,10 @@ public class MediaScanManager {
     public boolean isTrustedSlidableMediaInfo(SlidableMediaInfo mediaInfo) {
         boolean isTrusted = false;
 
-        if (null != mediaInfo.mMediaUrl) {
+        if (BuildConfig.FLAVOR_target.equals("custom")) {
+            Log.d(LOG_TAG, "FIXME: Tried to validate slidable media in a custom build (no media_scanner)!");
+            isTrusted = true;
+        } if (null != mediaInfo.mMediaUrl) {
             // Check whether the media is trusted
             MediaScan mediaScan;
             if (null != mediaInfo.mEncryptedFileInfo) {

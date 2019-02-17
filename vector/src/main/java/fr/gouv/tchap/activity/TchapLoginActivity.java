@@ -1277,10 +1277,12 @@ public class TchapLoginActivity extends MXCActionBarActivity implements Registra
         final String emailAddress = mLoginEmailTextView.getText().toString().trim();
         final String password = mLoginPasswordTextView.getText().toString().trim();
 
+        /*
         if (!android.util.Patterns.EMAIL_ADDRESS.matcher(emailAddress).matches()) {
             Toast.makeText(this, getString(R.string.auth_invalid_login_param), Toast.LENGTH_SHORT).show();
             return;
         }
+        */
 
         if (TextUtils.isEmpty(password)) {
             Toast.makeText(this, getString(R.string.auth_invalid_login_param), Toast.LENGTH_SHORT).show();
@@ -1289,7 +1291,18 @@ public class TchapLoginActivity extends MXCActionBarActivity implements Registra
 
         enableLoadingScreen(true);
 
+        // Test: use email as a username
+        // Treat emailAddress as a matrix ID and log in
+        Log.d(LOG_TAG, "Trying to login as " + emailAddress);
+        Platform p = new Platform();
+        p.hs = "matrix.anastas.io";
+        mTchapPlatform = p;
+        mCurrentEmail = emailAddress;
+        final HomeServerConnectionConfig hsConfig = getHsConfig();
+        login(hsConfig, emailAddress, null, null, password);
+
         Log.d(LOG_TAG, "## onLoginClick()");
+        /*
         discoverTchapPlatform(this, emailAddress, new ApiCallback<Platform>() {
             private void onError(String errorMessage) {
                 Toast.makeText(TchapLoginActivity.this, (null == errorMessage) ? getString(R.string.login_error_unable_login) : errorMessage, Toast.LENGTH_LONG).show();
@@ -1331,6 +1344,7 @@ public class TchapLoginActivity extends MXCActionBarActivity implements Registra
                 onError(getString(R.string.login_error_unable_login) + " : " + e.getLocalizedMessage());
             }
         });
+        */
     }
 
     /**
